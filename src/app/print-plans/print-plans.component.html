@@ -1,0 +1,33 @@
+<h1 class="mt-2 mb-0">Plan template</h1>
+<hr class="mt-0" style="border: 1px solid #009688;">
+<div class="container pt-2">
+  <div class="row">
+    <div class="col-4">
+      <div>
+        <strong>Subscription id</strong>
+      </div>
+      <input class="form-control" [(ngModel)]="subscriptionId" />
+    </div>
+    <div class="col-4">
+      <div>
+        <strong>Language</strong>
+      </div>
+      <select class="form-control" [(ngModel)]="language">
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+        <option value="mr">Marathi</option>
+        <option value="te">Telugu</option>
+        <option value="kn">Kanada</option>
+      </select>
+    </div>
+    <div class="col-4" style="margin-top: 10px">
+      <button class="btn btn-success mt-2" (click)="getPrintPlans()">Search</button>
+    </div>
+  </div>
+
+  <div *ngIf="printPlans" class="pb-2">
+    <div *ngFor="let printPlan of printPlans.data.sort(sortFunc)">
+      <app-print-plan-card [printPlan]="printPlan"></app-print-plan-card>
+    </div>
+  </div>
+</div>

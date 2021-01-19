@@ -16,13 +16,17 @@ import {AuthGuard} from './services/auth.guard';
 import {ModalModule} from 'ngx-bootstrap/modal';
 import {OwlDateTimeModule, OwlNativeDateTimeModule} from 'ng-pick-datetime';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
+import { PrintPlansComponent } from './print-plans/print-plans.component';
+import { PrintPlanCardComponent } from './print-plans/print-plan-card/print-plan-card.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HeaderComponent,
-    FeedsComponent
+    FeedsComponent,
+    PrintPlansComponent,
+    PrintPlanCardComponent
   ],
   imports: [
     BrowserModule,

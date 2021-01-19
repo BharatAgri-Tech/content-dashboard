@@ -20,6 +20,7 @@
         <mat-menu #agronomyMenu = "matMenu">
           <a mat-menu-item [routerLink]="'/content-dashboard'"> Nutrient deficiency </a>
           <a mat-menu-item [routerLink]="'/content-dashboard'"> PoP (Package of Practices) </a>
+          <a mat-menu-item [routerLink]="'/content-dashboard/print-plan'"> Print plan </a>
         </mat-menu>
         <button mat-button [matMenuTriggerFor] = "cmsMenu">CMS</button>
         <mat-menu #cmsMenu = "matMenu">

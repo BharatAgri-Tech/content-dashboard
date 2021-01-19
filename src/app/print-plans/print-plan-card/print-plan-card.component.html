@@ -1,0 +1,24 @@
+<h2 class="mt-2 mb-0">{{ printPlan.execution_date }}</h2>
+<hr class="mt-0" style="border: 1px solid #009688;">
+<div>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th scope="col">Input</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Unit</th>
+      <th scope="col">Instruction</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let activityItem of printPlan.activity_items; first as isFirst">
+      <td>{{activityItem.chemical.name}}</td>
+      <td>{{activityItem.quantity}}</td>
+      <td>{{activityItem.unit}}</td>
+      <td *ngIf="isFirst" style="vertical-align:middle; text-align: center" [rowSpan]="printPlan.activity_items.length">
+        {{printPlan.activity_data.instruction}}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
