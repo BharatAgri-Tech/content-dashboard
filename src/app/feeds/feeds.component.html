@@ -1,0 +1,279 @@
+<h1 class="mt-2 mb-0">Feeds dashboard</h1>
+<hr class="mt-0" style="border: 1px solid #009688;">
+<div class="container pt-2">
+  <!-- User, notification and schedule -->
+  <div class="row">
+    <div class="col-4">
+      <div>
+        <strong>User type</strong>
+        <span class="required"> *</span>
+      </div>
+      <select class="form-control" [formControl]="userTypeControl">
+        <option>Unpaid users</option>
+        <option>All users</option>
+        <option>Paid users</option>
+      </select>
+    </div>
+    <div class="col-4">
+      <div>
+        <strong>Notification type</strong>
+        <span class="required"> *</span>
+      </div>
+      <select class="form-control" [formControl]="notificationTypeControl">
+        <option>1</option>
+      </select>
+    </div>
+    <div class="col-4">
+      <div>
+        <strong>Schedule to</strong>
+        <span class="required"> *</span>
+      </div>
+      <input class="start_time form-control" [(ngModel)]="scheduleTo" [owlDateTime]="dt1"
+             [owlDateTimeTrigger]="dt1" placeholder="Schedule To  Time" [min]="minDate" />
+      <owl-date-time #dt1></owl-date-time>
+    </div>
+  </div>
+  <!-- Language and crop -->
+  <div class="row pt-3">
+    <div class="col-4">
+      <div>
+        <strong>Crop</strong>
+      </div>
+      <select class="form-control" [formControl]="cropControl">
+        <option>1</option>
+      </select>
+    </div>
+    <div class="col-4">
+      <div class="pb-2">
+        <strong>Language</strong>
+        <span class="required"> *</span>
+      </div>
+      <mat-checkbox [formControl]="englishLanguageControl" (change)="onLanguageChange('en')">English</mat-checkbox>
+      <mat-checkbox [formControl]="hindiLanguageControl" (change)="onLanguageChange('hi')" class="pl-4">Hindi</mat-checkbox>
+      <mat-checkbox [formControl]="marathiLanguageControl" (change)="onLanguageChange('mr')" class="pl-4">Marathi</mat-checkbox>
+    </div>
+    <div class="col-4">
+      <div>
+        <strong>Secondary redirection deeplink </strong>
+      </div>
+      <input class="form-control" [(ngModel)]="secondaryDeeplink" />
+    </div>
+  </div>
+  <!-- State, district and taluka -->
+  <div class="row pt-3">
+    <div class="col-4">
+      <div>
+        <strong>State</strong>
+      </div>
+      <select class="form-control" [formControl]="stateControl">
+        <option>1</option>
+      </select>
+    </div>
+    <div class="col-4">
+      <div>
+        <strong>District</strong>
+      </div>
+      <select class="form-control" [formControl]="districtControl">
+        <option>1</option>
+      </select>
+    </div>
+    <div class="col-4">
+      <div>
+        <strong>Taluka</strong>
+      </div>
+      <select class="form-control" [formControl]="talukaControl">
+        <option>1</option>
+      </select>
+    </div>
+  </div>
+  <!-- Titles -->
+  <div class="row pt-3">
+    <div *ngIf="englishLanguageControl.value" class="col-4">
+      <div>
+        <strong>Title </strong>
+        <span class="language-content badge badge-pill badge-dark" tooltip="English">EN</span>
+        <span class="required"> *</span>
+      </div>
+      <input class="form-control" [(ngModel)]="englishTitle" />
+    </div>
+    <div *ngIf="hindiLanguageControl.value" class="col-4">
+      <div>
+        <strong>Title </strong>
+        <span class="language-content badge badge-pill badge-dark" tooltip="Hindi">HI</span>
+        <span class="required"> *</span>
+      </div>
+      <input class="form-control" [(ngModel)]="hindiTitle" />
+    </div>
+    <div *ngIf="marathiLanguageControl.value" class="col-4">
+      <div>
+        <strong>Title </strong>
+        <span class="language-content badge badge-pill badge-dark" tooltip="Marathi">MR</span>
+        <span class="required"> *</span>
+      </div>
+      <input class="form-control" [(ngModel)]="marathiTitle" />
+    </div>
+  </div>
+  <!-- Message content -->
+  <div *ngIf="englishLanguageControl.value" class="row pt-3">
+    <div class="col-12">
+      <div>
+        <strong>Message </strong>
+        <span class="language-content badge badge-pill badge-dark">EN</span>
+        <span class="required"> *</span>
+      </div>
+      <textarea class="form-control" rows="2" [(ngModel)]="englishMessage"></textarea>
+    </div>
+  </div>
+  <!-- Message content -->
+  <div *ngIf="hindiLanguageControl.value" class="row pt-3">
+    <div class="col-12">
+      <div>
+        <strong>Message </strong>
+        <span class="language-content badge badge-pill badge-dark">HI</span>
+        <span class="required"> *</span>
+      </div>
+      <textarea class="form-control" rows="2" [(ngModel)]="hindiMessage"></textarea>
+    </div>
+  </div>
+  <!-- Message content -->
+  <div *ngIf="marathiLanguageControl.value" class="row pt-3">
+    <div class="col-12">
+      <div>
+        <strong>Message </strong>
+        <span class="language-content badge badge-pill badge-dark">MR</span>
+        <span class="required"> *</span>
+      </div>
+      <textarea class="form-control" rows="2" [(ngModel)]="marathiMessage"></textarea>
+    </div>
+  </div>
+  <!-- Image upload and youtube switcher -->
+  <div *ngIf="selectedLanguages.size > 1" class="row pt-3">
+    <div class="col-4">
+      <div class="pb-2">
+        <strong>Image upload</strong>
+      </div>
+      <span class="pr-2">Select one</span>
+      <div class="custom-control custom-switch switcher-box">
+        <input type="checkbox" [formControl]="imageSelectAllControl" class="custom-control-input pl-4" id="customSwitch1" />
+        <label class="custom-control-label" for="customSwitch1">Select all</label>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="pb-2">
+        <strong>Youtube link</strong>
+      </div>
+      <span class="pr-2">Select one</span>
+      <div class="custom-control custom-switch switcher-box">
+        <input type="checkbox" [formControl]="youtubeSelectAllControl" class="custom-control-input pl-4" id="customSwitch2" />
+        <label class="custom-control-label" for="customSwitch2">Select all</label>
+      </div>
+    </div>
+  </div>
+  <!-- Image upload -->
+  <div *ngIf="!imageSelectAllControl.value" class="row pt-3">
+    <div *ngIf="englishLanguageControl.value" class="col-4">
+      <div>
+        <strong>Image </strong>
+        <span class="language-content badge badge-pill badge-dark">ALL</span>
+        <span class="required"> *</span>
+      </div>
+      <input type="file" class="form-control-file" (change)="onImageSelect($event, 'all')"/>
+    </div>
+  </div>
+  <div *ngIf="imageSelectAllControl.value" class="row pt-3">
+    <div *ngIf="englishLanguageControl.value" class="col-4">
+      <div>
+        <strong>Image </strong>
+        <span class="language-content badge badge-pill badge-dark">EN</span>
+        <span class="required"> *</span>
+      </div>
+      <input type="file" class="form-control-file" (change)="onImageSelect($event, 'en')"/>
+    </div>
+    <div *ngIf="hindiLanguageControl.value" class="col-4">
+      <div>
+        <strong>Image </strong>
+        <span class="language-content badge badge-pill badge-dark">HI</span>
+        <span class="required"> *</span>
+      </div>
+      <input type="file" class="form-control-file" (change)="onImageSelect($event, 'hi')"/>
+    </div>
+    <div *ngIf="marathiLanguageControl.value" class="col-4">
+      <div>
+        <strong>Image </strong>
+        <span class="language-content badge badge-pill badge-dark">MR</span>
+        <span class="required"> *</span>
+      </div>
+      <input type="file" class="form-control-file" (change)="onImageSelect($event, 'mr')"/>
+    </div>
+  </div>
+  <!-- Youtube link -->
+  <div *ngIf="!youtubeSelectAllControl.value" class="row pt-3">
+    <div *ngIf="englishLanguageControl.value" class="col-4">
+      <div>
+        <strong>Youtube link </strong>
+        <span class="language-content badge badge-pill badge-dark">ALL</span>
+      </div>
+      <input class="form-control" [(ngModel)]="youtubeLink"/>
+    </div>
+  </div>
+  <div *ngIf="youtubeSelectAllControl.value" class="row pt-3">
+    <div *ngIf="englishLanguageControl.value" class="col-4">
+      <div>
+        <strong>Youtube link </strong>
+        <span class="language-content badge badge-pill badge-dark">EN</span>
+      </div>
+      <input class="form-control" [(ngModel)]="englishYoutubeLink"/>
+    </div>
+    <div *ngIf="hindiLanguageControl.value" class="col-4">
+      <div>
+        <strong>Youtube link </strong>
+        <span class="language-content badge badge-pill badge-dark">HI</span>
+      </div>
+      <input class="form-control" [(ngModel)]="hindiYoutubeLink"/>
+    </div>
+    <div *ngIf="marathiLanguageControl.value" class="col-4">
+      <div>
+        <strong>Youtube link </strong>
+        <span class="language-content badge badge-pill badge-dark">MR</span>
+      </div>
+      <input class="form-control" [(ngModel)]="marathiYoutubeLink"/>
+    </div>
+  </div>
+  <!-- Secondary redirection -->
+  <div class="row pt-3">
+    <div *ngIf="englishLanguageControl.value" class="col-4">
+      <div>
+        <strong>Secondary redirection hint </strong>
+        <span class="language-content badge badge-pill badge-dark">EN</span>
+      </div>
+      <input class="form-control" [(ngModel)]="englishRedirectionLink"/>
+    </div>
+    <div *ngIf="hindiLanguageControl.value" class="col-4">
+      <div>
+        <strong>Secondary redirection hint </strong>
+        <span class="language-content badge badge-pill badge-dark">HI</span>
+      </div>
+      <input class="form-control" [(ngModel)]="hindiRedirectionLink"/>
+    </div>
+    <div *ngIf="marathiLanguageControl.value" class="col-4">
+      <div>
+        <strong>Secondary redirection hint </strong>
+        <span class="language-content badge badge-pill badge-dark">MR</span>
+      </div>
+      <input class="form-control" [(ngModel)]="marathiRedirectionLink"/>
+    </div>
+  </div>
+  <!-- Submit and test -->
+  <div class="d-flex flex-row justify-content-end pt-4 pb-4 mb-4">
+      <button class="btn btn-outline-success">Test feed</button>
+      <button (click)="openModal(confirmSendTemplate)" class="btn btn-outline-danger ml-2">Send to users</button>
+  </div>
+</div>
+
+<ng-template #confirmSendTemplate>
+  <div class="modal-body text-center">
+    <p>Do you want to send the feeds to actual users?</p>
+    <button class="btn btn-primary" (click)="validateFeeds()">Yes</button>
+    <button class="btn btn-secondary ml-1" (click)="modalRef.hide()">No</button>
+  </div>
+</ng-template>

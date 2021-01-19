@@ -1,0 +1,32 @@
+<div class="pt-2">
+  <mat-toolbar color="accent">
+    <mat-toolbar-row>
+      <div>
+        <button mat-button [matMenuTriggerFor] = "marketingMenu">Marketing</button>
+        <mat-menu #marketingMenu = "matMenu">
+          <a mat-menu-item [routerLink]="'/content-dashboard/feeds'"> Feeds </a>
+          <a mat-menu-item [routerLink]="'/content-dashboard'"> Home page content </a>
+        </mat-menu>
+        <button mat-button [matMenuTriggerFor] = "salesMenu">Sales</button>
+        <mat-menu #salesMenu = "matMenu">
+          <a mat-menu-item [routerLink]="'/content-dashboard'"> New sales </a>
+          <a mat-menu-item [routerLink]="'/content-dashboard'"> Plan creation/generation </a>
+        </mat-menu>
+        <button mat-button [matMenuTriggerFor] = "operationsMenu">Operations</button>
+        <mat-menu #operationsMenu = "matMenu">
+          <a mat-menu-item [routerLink]="'/content-dashboard'"> Renewals </a>
+        </mat-menu>
+        <button mat-button [matMenuTriggerFor] = "agronomyMenu">Agronomy</button>
+        <mat-menu #agronomyMenu = "matMenu">
+          <a mat-menu-item [routerLink]="'/content-dashboard'"> Nutrient deficiency </a>
+          <a mat-menu-item [routerLink]="'/content-dashboard'"> PoP (Package of Practices) </a>
+        </mat-menu>
+        <button mat-button [matMenuTriggerFor] = "cmsMenu">CMS</button>
+        <mat-menu #cmsMenu = "matMenu">
+          <a mat-menu-item [routerLink]="'/content-dashboard'"> TBD </a>
+        </mat-menu>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>
+<router-outlet></router-outlet>

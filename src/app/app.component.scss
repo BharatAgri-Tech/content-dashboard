@@ -1,1 +1,17 @@
-/* You can parent components styles to this file here */
+:host ::ng-deep {
+  .dashboard-header {
+    font-size: 20px;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .cursor:hover{
+    cursor: pointer;
+  }
+
+  .required {
+    color: red;
+  }
+}
