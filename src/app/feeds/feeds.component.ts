@@ -112,13 +112,23 @@ export class FeedsComponent implements OnInit {
 
   onTestUsersClick() {
     this.resetErrorMessages();
-    this.validateFeeds();
+    const validatedFeed = this.validateFeeds();
+    if (!validatedFeed) {
+      console.log('valid');
+    } else {
+      console.log('invalid');
+    }
   }
 
   onSendUsersClick() {
     this.modalRef.hide();
     this.resetErrorMessages();
-    this.validateFeeds();
+    const validatedFeed = this.validateFeeds();
+    if (!validatedFeed) {
+      console.log('valid');
+    } else {
+      console.log('invalid');
+    }
   }
 
   resetErrorMessages() {
@@ -193,7 +203,12 @@ export class FeedsComponent implements OnInit {
         this.displayYoutubeError = !this.youtubeLink.includes(youtubeBase);
       }
     }
-
+    return ( this.displayUserTypeError || this.displayNotificationTypeError || this.displayScheduleError ||
+      this.displayLanguageError || this.displayEnglishTitleError || this.displayHindiTitleError ||
+      this.displayMarathiTitleError || this.displayEnglishMessageError || this.displayHindiMessageError ||
+      this.displayMarathiMessageError || this.displayImageError || this.displayEnglishImageError ||
+      this.displayHindiImageError || this.displayMarathiImageError || this.displayYoutubeError ||
+      this.displayEnglishYoutubeError || this.displayHindiYoutubeError || this.displayMarathiYoutubeError );
   }
 
 }

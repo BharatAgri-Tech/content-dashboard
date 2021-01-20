@@ -14,6 +14,9 @@ export interface PrintPlanActivityData {
   delta_from_sowing: number;
   instruction: string;
   schedule_type: string;
+  schedule_category: string;
+  pest: string;
+  pest_symptoms: string;
 }
 
 export interface PrintPlanActivityItem {

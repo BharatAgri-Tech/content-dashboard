@@ -1,5 +1,13 @@
 <h2 class="mt-2 mb-0">{{ printPlan.execution_date }}</h2>
-<hr class="mt-0" style="border: 1px solid #009688;">
+<hr class="mt-0 mb-1" style="border: 1px solid #009688;">
+<h4 *ngIf="printPlan.activity_data.schedule_category === 'n'" class="mb-1 badge badge-pill badge-warning">Nutrient</h4>
+<div *ngIf="printPlan.activity_data.schedule_category === 'p'">
+  <h4 class="mb-1 badge badge-pill badge-success">Pest - {{ printPlan.activity_data.pest }}</h4>
+  <div class="pb-2">
+    <strong>Symptoms:</strong>
+    <span class="pl-1">{{ printPlan.activity_data.pest_symptoms }}</span>
+  </div>
+</div>
 <div>
   <table class="table table-bordered">
     <thead>

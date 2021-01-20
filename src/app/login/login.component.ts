@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
 
   loginTiles: Tile[] = [
     {text: '', cols: 2, rows: 1, color: 'transparent', img: '../../assets/icons/ic_logo.png'},
-    {text: 'Content dashboard login', cols: 6, rows: 1, color: 'transparent', img: ''},
+    {text: 'Content dashboard sign-in', cols: 6, rows: 1, color: 'transparent', img: ''},
   ];
 
   usernameFormControl = new FormControl('', [
