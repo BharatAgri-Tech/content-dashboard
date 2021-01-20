@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PlanService} from '../services/plan.service';
 import {NGXLogger} from 'ngx-logger';
-import {PrintPlan} from './print-plan';
+import {PrintPlan, PrintPlanData} from './print-plan';
 
 @Component({
   selector: 'app-print-plans',
@@ -12,7 +12,6 @@ export class PrintPlansComponent implements OnInit {
 
   subscriptionId = '';
   language = '';
-  notSortedPrintPlans = {} as PrintPlan;
   printPlans = {} as PrintPlan;
 
   constructor(
@@ -21,13 +20,14 @@ export class PrintPlansComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.printPlans.data = [] as PrintPlanData[];
   }
 
   getPrintPlans() {
     this.planService.getPrintPlans(this.subscriptionId, this.language).subscribe(
       data => {
         this.printPlans = data;
-        console.log(this.printPlans);
+        this.logger.debug('Print plan template: ', this.printPlans);
       }, error =>
       {
         this.logger.error('Get print plan failed', error);

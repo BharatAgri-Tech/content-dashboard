@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  <div *ngIf="printPlans" class="pb-2">
+  <div *ngIf="printPlans.data.length > 0" class="pb-2">
     <div *ngFor="let printPlan of printPlans.data.sort(sortFunc)">
       <app-print-plan-card [printPlan]="printPlan"></app-print-plan-card>
     </div>
