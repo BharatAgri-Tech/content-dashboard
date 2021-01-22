@@ -10,9 +10,9 @@
         <strong *ngIf="displayUserTypeError" class="required"> User type is mandatory</strong>
       </div>
       <select class="form-control" [formControl]="userTypeControl">
-        <option>Unpaid users</option>
-        <option>All users</option>
-        <option>Paid users</option>
+        <option value="unpaid">Unpaid users</option>
+        <option value="all">All users</option>
+        <option value="paid">Paid users</option>
       </select>
     </div>
     <div class="col-4">
@@ -22,7 +22,7 @@
         <strong *ngIf="displayNotificationTypeError" class="required"> Notification type is mandatory</strong>
       </div>
       <select class="form-control" [formControl]="notificationTypeControl">
-        <option>1</option>
+        <option *ngFor="let notification of notifications" [value]="notification.notif_type">{{notification.name}} - {{notification.notif_type}}</option>
       </select>
     </div>
     <div class="col-4">
@@ -43,7 +43,7 @@
         <strong>Crop</strong>
       </div>
       <select class="form-control" [formControl]="cropControl">
-        <option>1</option>
+        <option *ngFor="let crop of crops" [value]="crop.id">{{ crop.name_en }}</option>
       </select>
     </div>
     <div class="col-4">
@@ -69,25 +69,29 @@
       <div>
         <strong>State</strong>
       </div>
-      <select class="form-control" [formControl]="stateControl">
-        <option>1</option>
+      <select class="form-control" [formControl]="stateControl" (change)="getDistricts()">
+        <option *ngFor="let state of states" [value]="state.id">{{ state.name_en }}</option>
       </select>
     </div>
     <div class="col-4">
       <div>
         <strong>District</strong>
+        <mat-spinner class="ml-2" style="display: inline" *ngIf="isLoadingDistrict" diameter="20" value="50"></mat-spinner>
       </div>
-      <select class="form-control" [formControl]="districtControl">
-        <option>1</option>
+      <select *ngIf="districts.length > 0" class="form-control" [formControl]="districtControl" (change)="getTalukas()">
+        <option *ngFor="let district of districts" [value]="district.id">{{ district.name_en }}</option>
       </select>
+      <input class="form-control" *ngIf="districts.length === 0" [disabled]="districts.length === 0"/>
     </div>
     <div class="col-4">
       <div>
         <strong>Taluka</strong>
+        <mat-spinner class="ml-2" style="display: inline" *ngIf="isLoadingTaluka" diameter="20" value="50"></mat-spinner>
       </div>
-      <select class="form-control" [formControl]="talukaControl">
-        <option>1</option>
+      <select *ngIf="talukas.length > 0" class="form-control" [formControl]="talukaControl">
+        <option *ngFor="let taluka of talukas" [value]="taluka.id">{{ taluka.name_en }}</option>
       </select>
+      <input class="form-control" *ngIf="talukas.length === 0" [disabled]="talukas.length === 0"/>
     </div>
   </div>
   <!-- Titles -->
@@ -282,9 +286,14 @@
     </div>
   </div>
   <!-- Submit and test -->
-  <div class="d-flex flex-row justify-content-end pt-4 pb-4 mb-4">
-      <button class="btn btn-outline-success" (click)="onTestUsersClick()">Test feed</button>
-      <button (click)="openModal(confirmSendTemplate)" class="btn btn-outline-danger ml-2">Send to users</button>
+  <div class="d-flex flex-row justify-content-end pt-4">
+    <mat-spinner class="mr-2 mt-1" style="display: inline" *ngIf="displaySendingFeed" color="primary" diameter="50" value="50"></mat-spinner>
+    <button class="btn btn-outline-success" (click)="onTestUsersClick()" [disabled]="displaySendingFeed">Test feed</button>
+    <button (click)="openModal(confirmSendTemplate)" class="btn btn-outline-danger ml-2" [disabled]="displaySendingFeed">Send to users</button>
+  </div>
+  <div class="d-flex flex-row justify-content-center pb-4 mb-4">
+    <h3 *ngIf="displayFeedSaved" class="badge badge-success">Test feeds sent successfully</h3>
+    <h3 *ngIf="displayFeedSaveFailed" class="badge badge-danger">Send feeds failed</h3>
   </div>
 </div>
 

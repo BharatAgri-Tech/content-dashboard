@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
     .pipe(first())
     .subscribe(
       data => {
-        this.logger.debug('Login successful', data);
+        this.logger.info('Login successful', data);
 
         if (data.key) {
           localStorage.setItem('currentUser', JSON.stringify(data));

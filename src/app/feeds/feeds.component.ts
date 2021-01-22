@@ -3,6 +3,10 @@ import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 import {NGXLogger} from 'ngx-logger';
 import {FormControl} from '@angular/forms';
 import {LanguageEnums} from '../shared/enums/language-enums';
+import {FeedService} from '../services/feed.service';
+import {Crop, District, State, Taluka} from '../shared/models/common-models';
+import {Feed, FeedImage, NotificationType} from './feed-models';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-feeds',
@@ -12,12 +16,22 @@ import {LanguageEnums} from '../shared/enums/language-enums';
 export class FeedsComponent implements OnInit {
 
   modalRef = {} as BsModalRef;
+  states = [] as State[];
+  districts = [] as District[];
+  talukas = [] as Taluka[];
+  notifications = [] as NotificationType[];
+  crops = [] as Crop[];
+  feed = {} as Feed;
+  isLoadingDistrict = false;
+  isLoadingTaluka = false;
+
+
   imageFile = {} as any;
   englishImageFile = {} as any;
   hindiImageFile = {} as any;
   marathiImageFile = {} as any;
   selectedLanguages = new Set();
-  scheduleTo: any;
+  scheduleTo = '';
   minDate = new Date();
   englishLanguageControl = new FormControl(false);
   hindiLanguageControl = new FormControl(false);
@@ -45,6 +59,11 @@ export class FeedsComponent implements OnInit {
   marathiRedirectionLink = '';
   secondaryDeeplink = '';
 
+  imageId = '';
+  englishImageId = '';
+  hindiImageId = '';
+  marathiImageId = '';
+
   displayUserTypeError = false;
   displayNotificationTypeError = false;
   displayScheduleError = false;
@@ -64,13 +83,83 @@ export class FeedsComponent implements OnInit {
   displayHindiYoutubeError = false;
   displayMarathiYoutubeError = false;
 
+  displayFeedSaved = false;
+  displayFeedSaveFailed = false;
+  displaySendingFeed = false;
+
   constructor(
     private modalService: BsModalService,
-    private logger: NGXLogger
+    private logger: NGXLogger,
+    private feedService: FeedService
   ) {}
 
   ngOnInit() {
-    console.log('in feeds page');
+    this.getNotificationTypes();
+    this.getStates();
+    this.getCropList();
+  }
+
+  getNotificationTypes() {
+    this.feedService.getNotificationTypes().subscribe(
+      data => {
+        this.notifications = data;
+        this.notifications = this.notifications.filter( notification => notification.lang === 'en');
+      }, error => {
+        this.logger.error('Unable to fetch notification types', error);
+      }
+    );
+  }
+
+  getCropList() {
+    this.feedService.getCropList().subscribe(
+      data => {
+        this.crops = data.data;
+      }, error => {
+        this.logger.error('Unable to fetch crop list', error);
+      }
+    );
+  }
+
+  getStates() {
+    this.feedService.getStates().subscribe(
+      data => {
+        this.states = data;
+      }, error => {
+        this.logger.error('Unable to fetch states', error);
+      }
+    );
+  }
+
+  getDistricts() {
+    this.isLoadingDistrict = true;
+    this.districts = [];
+    this.talukas = [];
+    this.districtControl.setValue('');
+    this.talukaControl.setValue('');
+    this.feedService.getDistricts(this.stateControl.value).subscribe(
+      data => {
+        this.districts = data;
+        this.isLoadingDistrict = false;
+      }, error => {
+        this.isLoadingDistrict = false;
+        this.logger.error('Unable to fetch districts', error);
+      }
+    );
+  }
+
+  getTalukas() {
+    this.isLoadingTaluka = true;
+    this.talukas = [];
+    this.talukaControl.setValue('');
+    this.feedService.getTalukas(this.districtControl.value).subscribe(
+      data => {
+        this.talukas = data;
+        this.isLoadingTaluka = false;
+      }, error => {
+        this.isLoadingTaluka = false;
+        this.logger.error('Unable to fetch talukas', error);
+      }
+    );
   }
 
   openModal(template: TemplateRef<any>) {
@@ -97,7 +186,6 @@ export class FeedsComponent implements OnInit {
         break;
       }
     }
-    console.log('Selected image:', currentImage[0] );
   }
 
   onLanguageChange(currentLanguage: string) {
@@ -111,23 +199,207 @@ export class FeedsComponent implements OnInit {
   }
 
   onTestUsersClick() {
-    this.resetErrorMessages();
-    const validatedFeed = this.validateFeeds();
-    if (!validatedFeed) {
-      console.log('valid');
-    } else {
-      console.log('invalid');
-    }
+    this.displaySendingFeed = true;
+    this.feed.is_test_feed = true;
+    this.saveImageAndCreateFeed();
   }
 
   onSendUsersClick() {
     this.modalRef.hide();
+    this.displaySendingFeed = true;
+    this.feed.is_test_feed = false;
+    this.saveImageAndCreateFeed();
+  }
+
+  saveImageAndCreateFeed() {
     this.resetErrorMessages();
     const validatedFeed = this.validateFeeds();
     if (!validatedFeed) {
-      console.log('valid');
+      this.saveImages();
     } else {
-      console.log('invalid');
+      this.displaySendingFeed = false;
+    }
+  }
+
+  saveImages() {
+    if (this.imageSelectAllControl.value) {
+        this.feedService.saveImage(null, this.englishImageFile, this.hindiImageFile, this.marathiImageFile).subscribe(
+          data => {
+            if (this.englishImageFile?.name !== undefined &&
+              this.hindiImageFile?.name !== undefined && this.marathiImageFile?.name !== undefined) {
+              this.englishImageId = data[0].id;
+              this.hindiImageId = data[1].id;
+              this.marathiImageId = data[2].id;
+            } else if (this.englishImageFile?.name !== undefined &&
+              this.hindiImageFile?.name !== undefined && this.marathiImageFile?.name === undefined) {
+              this.englishImageId = data[0].id;
+              this.hindiImageId = data[1].id;
+            } else if (this.englishImageFile?.name !== undefined &&
+              this.hindiImageFile?.name === undefined && this.marathiImageFile?.name !== undefined) {
+              this.englishImageId = data[0].id;
+              this.marathiImageId = data[1].id;
+            } else if (this.englishImageFile?.name === undefined &&
+              this.hindiImageFile?.name !== undefined && this.marathiImageFile?.name !== undefined) {
+              this.hindiImageId = data[0].id;
+              this.marathiImageId = data[1].id;
+            } else if (this.englishImageFile?.name !== undefined &&
+              this.hindiImageFile?.name === undefined && this.marathiImageFile?.name === undefined) {
+              this.englishImageId = data[0].id;
+            } else if (this.englishImageFile?.name === undefined &&
+              this.hindiImageFile?.name !== undefined && this.marathiImageFile?.name === undefined) {
+              this.hindiImageId = data[0].id;
+            } else {
+              this.marathiImageId = data[0].id;
+            }
+          }, error => {
+            this.logger.error('Image upload error', error);
+            this.displaySendingFeed = false;
+          }, () => {
+            this.createFeed();
+          }
+        );
+    } else {
+      this.feedService.saveImage(this.imageFile, null, null, null).subscribe(
+        data => {
+          this.imageId = data[0].id;
+          this.englishImageId = this.imageId;
+          this.hindiImageId = this.imageId;
+          this.marathiImageId = this.imageId;
+        }, error => {
+          this.logger.error('Image upload error', error);
+          this.displaySendingFeed = false;
+        }, () => {
+          this.createFeed();
+        }
+      );
+    }
+  }
+
+  createFeed() {
+    if (!this.selectedLanguages.has('en')) {
+      this.englishImageFile = {} as any;
+      this.englishImageId = '';
+      this.englishYoutubeLink = '';
+      this.englishMessage = '';
+      this.englishTitle = '';
+      this.englishRedirectionLink = '';
+    }
+    if (!this.selectedLanguages.has('hi')) {
+      this.hindiImageFile = {} as any;
+      this.hindiImageId = '';
+      this.hindiYoutubeLink = '';
+      this.hindiMessage = '';
+      this.hindiTitle = '';
+      this.hindiRedirectionLink = '';
+    }
+    if (!this.selectedLanguages.has('mr')) {
+      this.marathiImageFile = {} as any;
+      this.marathiImageId = '';
+      this.marathiYoutubeLink = '';
+      this.marathiMessage = '';
+      this.marathiTitle = '';
+      this.marathiRedirectionLink = '';
+    }
+    // Default values
+    this.feed.org_ids = [67];
+    this.feed.lang = 'en';
+    this.feed.delivery_type = 'feed';
+    this.feed.should_schedule = true;
+
+    // Generated values
+    this.feed.notification_type = this.notificationTypeControl.value;
+    this.feed.users_type = this.userTypeControl.value;
+    this.feed.news_lang = Object.values(Array.from(this.selectedLanguages)) as string[];
+    this.feed.preferred_lang = Object.values(Array.from(this.selectedLanguages)) as string[];
+    this.feed.youtube_video_link_en = this.selectedLanguages.has('en') ?
+      this.youtubeSelectAllControl ? this.englishYoutubeLink : this.youtubeLink : '';
+    this.feed.youtube_video_link_hi = this.selectedLanguages.has('hi') ?
+      this.youtubeSelectAllControl ? this.hindiYoutubeLink : this.youtubeLink : '';
+    this.feed.youtube_video_link_mr = this.selectedLanguages.has('mr') ?
+      this.youtubeSelectAllControl ? this.marathiYoutubeLink : this.youtubeLink : '';
+    this.feed.secondary_redirection_hint_en = this.englishRedirectionLink;
+    this.feed.secondary_redirection_hint_hi = this.hindiRedirectionLink;
+    this.feed.secondary_redirection_hint_mr = this.marathiRedirectionLink;
+    this.feed.secondary_redirection_deeplink = this.secondaryDeeplink;
+    this.feed.title_en = this.englishTitle;
+    this.feed.title_hi = this.hindiTitle;
+    this.feed.title_mr = this.marathiTitle;
+    this.feed.image_id_en = Number(this.englishImageId);
+    this.feed.image_id_hi = Number(this.hindiImageId);
+    this.feed.image_id_mr = Number(this.marathiImageId);
+    this.feed.message_en = this.englishMessage;
+    this.feed.message_hi = this.hindiMessage;
+    this.feed.message_mr = this.marathiMessage;
+    this.feed.crops = this.cropControl.value ?  [this.cropControl.value] : [];
+    this.feed.state =  this.stateControl.value ?  [this.stateControl.value] : [];
+    this.feed.district =  this.districtControl.value ?  [this.districtControl.value] : [];
+    this.feed.taluka =  this.talukaControl.value ?  [this.talukaControl.value] : [];
+
+    // Formatting date as required
+    const datePipe = new DatePipe('en-US');
+    const formattedDate = datePipe.transform(this.scheduleTo, 'yy/MM/dd HH:mm:ss');
+    this.feed.schedule_to = formattedDate ? formattedDate.toString() : '';
+
+    this.feedService.saveFeed(this.feed).subscribe(
+      result => {
+        this.logger.info('Saved feeds successfully');
+        this.displaySendingFeed = false;
+        this.displayFeedSaved = true;
+        this.resetFeedForm();
+      }, error => {
+        this.logger.error('Unable to save feeds', error);
+        this.displaySendingFeed = false;
+        this.displayFeedSaveFailed = true;
+        setTimeout (() => {
+          this.displayFeedSaveFailed = false;
+        }, 2000);
+      }
+    );
+  }
+
+  resetFeedForm() {
+    if (this.feed.is_test_feed) {
+      setTimeout (() => {
+        this.displayFeedSaved = false;
+      }, 2000);
+    } else {
+      this.feed = {} as Feed;
+      this.imageFile = {} as any;
+      this.englishImageFile = {} as any;
+      this.hindiImageFile = {} as any;
+      this.marathiImageFile = {} as any;
+      this.selectedLanguages = new Set();
+      this.scheduleTo = '';
+      this.minDate = new Date();
+      this.englishLanguageControl.setValue(false);
+      this.hindiLanguageControl.setValue(false);
+      this.marathiLanguageControl.setValue(false);
+      this.imageSelectAllControl.setValue(true);
+      this.youtubeSelectAllControl.setValue(true);
+      this.userTypeControl.setValue('');
+      this.notificationTypeControl.setValue('');
+      this.cropControl.setValue('');
+      this.stateControl.setValue('');
+      this.districtControl.setValue('');
+      this.talukaControl.setValue('');
+      this.englishTitle = '';
+      this.hindiTitle = '';
+      this.marathiTitle = '';
+      this.englishMessage = '';
+      this.hindiMessage = '';
+      this.marathiMessage = '';
+      this.youtubeLink = '';
+      this.englishYoutubeLink = '';
+      this.hindiYoutubeLink = '';
+      this.marathiYoutubeLink = '';
+      this.englishRedirectionLink = '';
+      this.hindiRedirectionLink = '';
+      this.marathiRedirectionLink = '';
+      this.secondaryDeeplink = '';
+      this.imageId = '';
+      this.englishImageId = '';
+      this.hindiImageId = '';
+      this.marathiImageId = '';
     }
   }
 

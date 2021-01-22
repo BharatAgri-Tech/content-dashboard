@@ -27,7 +27,7 @@ export class PrintPlansComponent implements OnInit {
     this.planService.getPrintPlans(this.subscriptionId, this.language).subscribe(
       data => {
         this.printPlans = data;
-        this.logger.debug('Print plan template: ', this.printPlans);
+        this.logger.info('Print plan template: ', this.printPlans);
       }, error =>
       {
         this.logger.error('Get print plan failed', error);
