@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy-demo": "ng build --aot && aws s3 cp dist s3://content-demo.leanagri.com --recursive --acl public-read && aws cloudfront create-invalidation --distribution-id E24IIB5BJVKYXJ --paths '/*'"
+    "deploy-demo": "ng build --aot && aws s3 cp dist s3://content-demo.leanagri.com --recursive --acl public-read && aws cloudfront create-invalidation --distribution-id E24IIB5BJVKYXJ --paths '/*'",
+    "deploy-pre-prod": "ng build --configuration=pre-prod --aot && aws s3 cp dist s3://content-demo.leanagri.com --recursive --acl public-read && aws cloudfront create-invalidation --distribution-id E24IIB5BJVKYXJ --paths '/*'"
   },
   "private": true,
   "dependencies": {
