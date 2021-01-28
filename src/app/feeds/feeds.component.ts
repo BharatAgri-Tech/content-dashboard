@@ -2,7 +2,7 @@ import {Component, OnInit, TemplateRef} from '@angular/core';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 import {NGXLogger} from 'ngx-logger';
 import {FormControl} from '@angular/forms';
-import {LanguageEnums} from '../shared/enums/language-enums';
+import {ImageValidator, ImageValidatorType, LanguageEnums} from '../shared/enums/language-enums';
 import {FeedService} from '../services/feed.service';
 import {Crop, District, State, Taluka} from '../shared/models/common-models';
 import {Feed, FeedImage, NotificationType} from './feed-models';
@@ -24,6 +24,8 @@ export class FeedsComponent implements OnInit {
   feed = {} as Feed;
   isLoadingDistrict = false;
   isLoadingTaluka = false;
+  imageValidatorTypes = Object.values(ImageValidatorType);
+  imageValidatorSize = ImageValidator;
 
 
   imageFile = {} as any;
@@ -82,6 +84,14 @@ export class FeedsComponent implements OnInit {
   displayEnglishYoutubeError = false;
   displayHindiYoutubeError = false;
   displayMarathiYoutubeError = false;
+  displayImageTypeError = false;
+  displayEnglishImageTypeError = false;
+  displayMarathiImageTypeError = false;
+  displayHindiImageTypeError = false;
+  displayImageSizeError = false;
+  displayEnglishSizeTypeError = false;
+  displayMarathiSizeTypeError = false;
+  displayHindiSizeTypeError = false;
 
   displayFeedSaved = false;
   displayFeedSaveFailed = false;
@@ -136,30 +146,43 @@ export class FeedsComponent implements OnInit {
     this.talukas = [];
     this.districtControl.setValue('');
     this.talukaControl.setValue('');
-    this.feedService.getDistricts(this.stateControl.value).subscribe(
-      data => {
-        this.districts = data;
-        this.isLoadingDistrict = false;
-      }, error => {
-        this.isLoadingDistrict = false;
-        this.logger.error('Unable to fetch districts', error);
-      }
-    );
+    if (this.stateControl.value) {
+      this.feedService.getDistricts(this.stateControl.value).subscribe(
+        data => {
+          this.districts = data;
+          this.isLoadingDistrict = false;
+        }, error => {
+          this.isLoadingDistrict = false;
+          this.logger.error('Unable to fetch districts', error);
+        }
+      );
+    } else {
+      this.isLoadingDistrict = false;
+    }
   }
 
   getTalukas() {
     this.isLoadingTaluka = true;
     this.talukas = [];
     this.talukaControl.setValue('');
-    this.feedService.getTalukas(this.districtControl.value).subscribe(
-      data => {
-        this.talukas = data;
-        this.isLoadingTaluka = false;
-      }, error => {
-        this.isLoadingTaluka = false;
-        this.logger.error('Unable to fetch talukas', error);
-      }
-    );
+    if (this.districtControl.value) {
+      this.feedService.getTalukas(this.districtControl.value).subscribe(
+        data => {
+          this.talukas = data;
+          this.isLoadingTaluka = false;
+        }, error => {
+          this.isLoadingTaluka = false;
+          this.logger.error('Unable to fetch talukas', error);
+        }
+      );
+    } else {
+      this.isLoadingTaluka = false;
+    }
+  }
+
+  setCurrentDateAndTime() {
+    this.scheduleTo = '';
+    this.minDate = new Date();
   }
 
   openModal(template: TemplateRef<any>) {
@@ -359,6 +382,8 @@ export class FeedsComponent implements OnInit {
 
   resetFeedForm() {
     if (this.feed.is_test_feed) {
+      this.scheduleTo = '';
+      this.minDate = new Date();
       setTimeout (() => {
         this.displayFeedSaved = false;
       }, 2000);
@@ -422,6 +447,14 @@ export class FeedsComponent implements OnInit {
     this.displayEnglishYoutubeError = false;
     this.displayHindiYoutubeError = false;
     this.displayMarathiYoutubeError = false;
+    this.displayImageTypeError = false;
+    this.displayEnglishImageTypeError = false;
+    this.displayMarathiImageTypeError = false;
+    this.displayHindiImageTypeError = false;
+    this.displayImageSizeError = false;
+    this.displayEnglishSizeTypeError = false;
+    this.displayMarathiSizeTypeError = false;
+    this.displayHindiSizeTypeError = false;
   }
 
   validateFeeds() {
@@ -436,8 +469,14 @@ export class FeedsComponent implements OnInit {
       this.displayEnglishMessageError = this.englishMessage.length < 1;
       if (this.imageSelectAllControl.value) {
         this.displayEnglishImageError = this.englishImageFile?.name === undefined;
+        if (this.englishImageFile?.name !== undefined) {
+          let name = this.englishImageFile.name;
+          name = name.split('.').pop();
+          this.displayEnglishSizeTypeError = this.englishImageFile.size > ImageValidator.SIZE;
+          this.displayEnglishImageTypeError = !this.imageValidatorTypes.includes(name);
+        }
       } else {
-        this.displayImageError = this.imageFile?.name === undefined;
+        this.validateCommonImage();
       }
       if (this.youtubeSelectAllControl.value && this.englishYoutubeLink.length > 0) {
         this.displayEnglishYoutubeError = !this.englishYoutubeLink.includes(youtubeBase);
@@ -451,8 +490,14 @@ export class FeedsComponent implements OnInit {
       this.displayHindiMessageError = this.hindiMessage.length < 1;
       if (this.imageSelectAllControl.value) {
         this.displayHindiImageError = this.hindiImageFile?.name === undefined;
+        if (this.hindiImageFile?.name !== undefined) {
+          let name = this.hindiImageFile.name;
+          name = name.split('.').pop();
+          this.displayHindiSizeTypeError = this.hindiImageFile.size > ImageValidator.SIZE;
+          this.displayHindiImageTypeError = !this.imageValidatorTypes.includes(name);
+        }
       } else {
-        this.displayImageError = this.imageFile?.name === undefined;
+        this.validateCommonImage();
       }
       if (this.youtubeSelectAllControl.value && this.hindiYoutubeLink.length > 0) {
         this.displayHindiYoutubeError = !this.hindiYoutubeLink.includes(youtubeBase);
@@ -466,8 +511,14 @@ export class FeedsComponent implements OnInit {
       this.displayMarathiMessageError = this.marathiMessage.length < 1;
       if (this.imageSelectAllControl.value) {
         this.displayMarathiImageError = this.marathiImageFile?.name === undefined;
+        if (this.marathiImageFile?.name !== undefined) {
+          let name = this.marathiImageFile.name;
+          name = name.split('.').pop();
+          this.displayMarathiSizeTypeError = this.marathiImageFile.size > ImageValidator.SIZE;
+          this.displayMarathiImageTypeError = !this.imageValidatorTypes.includes(name);
+        }
       } else {
-        this.displayImageError = this.imageFile?.name === undefined;
+        this.validateCommonImage();
       }
       if (this.youtubeSelectAllControl.value && this.marathiYoutubeLink.length > 0) {
         this.displayMarathiYoutubeError = !this.marathiYoutubeLink.includes(youtubeBase);
@@ -480,7 +531,20 @@ export class FeedsComponent implements OnInit {
       this.displayMarathiTitleError || this.displayEnglishMessageError || this.displayHindiMessageError ||
       this.displayMarathiMessageError || this.displayImageError || this.displayEnglishImageError ||
       this.displayHindiImageError || this.displayMarathiImageError || this.displayYoutubeError ||
-      this.displayEnglishYoutubeError || this.displayHindiYoutubeError || this.displayMarathiYoutubeError );
+      this.displayEnglishYoutubeError || this.displayHindiYoutubeError || this.displayMarathiYoutubeError ||
+      this.displayImageSizeError || this.displayImageTypeError || this.displayEnglishImageTypeError ||
+      this.displayEnglishSizeTypeError || this.displayHindiImageTypeError || this.displayHindiSizeTypeError ||
+      this.displayMarathiImageTypeError || this.displayMarathiSizeTypeError);
+  }
+
+  validateCommonImage() {
+    this.displayImageError = this.imageFile?.name === undefined;
+    if (this.imageFile?.name !== undefined) {
+      let name = this.imageFile.name;
+      name = name.split('.').pop();
+      this.displayImageSizeError = this.imageFile.size > ImageValidator.SIZE;
+      this.displayImageTypeError = !this.imageValidatorTypes.includes(name);
+    }
   }
 
 }

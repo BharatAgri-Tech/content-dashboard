@@ -31,7 +31,7 @@
         <span class="required"> *</span>
         <strong *ngIf="displayScheduleError" class="required"> Schedule timer is mandatory</strong>
       </div>
-      <input class="start_time form-control" [(ngModel)]="scheduleTo" [owlDateTime]="dt1"
+      <input class="start_time form-control" (click)="setCurrentDateAndTime()" [(ngModel)]="scheduleTo" [owlDateTime]="dt1"
              [owlDateTimeTrigger]="dt1" placeholder="Schedule To  Time" [min]="minDate" />
       <owl-date-time #dt1></owl-date-time>
     </div>
@@ -43,6 +43,7 @@
         <strong>Crop</strong>
       </div>
       <select class="form-control" [formControl]="cropControl">
+        <option value="">None</option>
         <option *ngFor="let crop of crops" [value]="crop.id">{{ crop.name_en }}</option>
       </select>
     </div>
@@ -70,6 +71,7 @@
         <strong>State</strong>
       </div>
       <select class="form-control" [formControl]="stateControl" (change)="getDistricts()">
+        <option value="">None</option>
         <option *ngFor="let state of states" [value]="state.id">{{ state.name_en }}</option>
       </select>
     </div>
@@ -79,6 +81,7 @@
         <mat-spinner class="ml-2" style="display: inline" *ngIf="isLoadingDistrict" diameter="20" value="50"></mat-spinner>
       </div>
       <select *ngIf="districts.length > 0" class="form-control" [formControl]="districtControl" (change)="getTalukas()">
+        <option value="">None</option>
         <option *ngFor="let district of districts" [value]="district.id">{{ district.name_en }}</option>
       </select>
       <input class="form-control" *ngIf="districts.length === 0" [disabled]="districts.length === 0"/>
@@ -89,6 +92,7 @@
         <mat-spinner class="ml-2" style="display: inline" *ngIf="isLoadingTaluka" diameter="20" value="50"></mat-spinner>
       </div>
       <select *ngIf="talukas.length > 0" class="form-control" [formControl]="talukaControl">
+        <option value="">None</option>
         <option *ngFor="let taluka of talukas" [value]="taluka.id">{{ taluka.name_en }}</option>
       </select>
       <input class="form-control" *ngIf="talukas.length === 0" [disabled]="talukas.length === 0"/>
@@ -191,6 +195,8 @@
         <span class="language-content badge badge-pill badge-dark">ALL</span>
         <span class="required"> *</span>
         <strong *ngIf="displayImageError" class="required"> Upload a common image</strong>
+        <strong *ngIf="displayImageTypeError" class="required"> Only jpg and png formats are allowed</strong>
+        <strong *ngIf="displayImageSizeError" class="required"> Image size should be less than {{ imageValidatorSize.SIZE_KB }} kb</strong>
       </div>
       <input type="file" class="form-control-file" (change)="onImageSelect($event, 'all')"/>
     </div>
@@ -202,6 +208,8 @@
         <span class="language-content badge badge-pill badge-dark">EN</span>
         <span class="required"> *</span>
         <strong *ngIf="displayEnglishImageError" class="required"> Upload an image for english content</strong>
+        <strong *ngIf="displayEnglishImageTypeError" class="required"> Only jpg and png formats are allowed</strong>
+        <strong *ngIf="displayEnglishSizeTypeError" class="required"> Image size should be less than {{ imageValidatorSize.SIZE_KB }} kb</strong>
       </div>
       <input type="file" class="form-control-file" (change)="onImageSelect($event, 'en')"/>
     </div>
@@ -211,6 +219,8 @@
         <span class="language-content badge badge-pill badge-dark">HI</span>
         <span class="required"> *</span>
         <strong *ngIf="displayHindiImageError" class="required"> Upload an image for hindi content</strong>
+        <strong *ngIf="displayHindiImageTypeError" class="required"> Only jpg and png formats are allowed</strong>
+        <strong *ngIf="displayHindiSizeTypeError" class="required"> Image size should be less than {{ imageValidatorSize.SIZE_KB }} kb</strong>
       </div>
       <input type="file" class="form-control-file" (change)="onImageSelect($event, 'hi')"/>
     </div>
@@ -220,6 +230,8 @@
         <span class="language-content badge badge-pill badge-dark">MR</span>
         <span class="required"> *</span>
         <strong *ngIf="displayMarathiImageError" class="required"> Upload an image for marathi content</strong>
+        <strong *ngIf="displayMarathiImageTypeError" class="required"> Only jpg and png formats are allowed</strong>
+        <strong *ngIf="displayMarathiSizeTypeError" class="required"> Image size should be less than {{ imageValidatorSize.SIZE_KB }} kb</strong>
       </div>
       <input type="file" class="form-control-file" (change)="onImageSelect($event, 'mr')"/>
     </div>
