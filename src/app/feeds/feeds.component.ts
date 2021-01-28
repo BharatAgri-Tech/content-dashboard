@@ -15,6 +15,10 @@ import {DatePipe} from '@angular/common';
 })
 export class FeedsComponent implements OnInit {
 
+  // disable fields
+  disableCrop = true;
+  disableState = true;
+
   modalRef = {} as BsModalRef;
   states = [] as State[];
   districts = [] as District[];

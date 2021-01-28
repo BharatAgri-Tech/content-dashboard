@@ -42,10 +42,11 @@
       <div>
         <strong>Crop</strong>
       </div>
-      <select class="form-control" [formControl]="cropControl">
+      <select *ngIf="!disableCrop" class="form-control" [formControl]="cropControl">
         <option value="">None</option>
         <option *ngFor="let crop of crops" [value]="crop.id">{{ crop.name_en }}</option>
       </select>
+      <input class="form-control" [disabled]="disableCrop">
     </div>
     <div class="col-4">
       <div class="pb-2">
@@ -70,10 +71,11 @@
       <div>
         <strong>State</strong>
       </div>
-      <select class="form-control" [formControl]="stateControl" (change)="getDistricts()">
+      <select *ngIf="!disableState" class="form-control" [formControl]="stateControl" (change)="getDistricts()">
         <option value="">None</option>
         <option *ngFor="let state of states" [value]="state.id">{{ state.name_en }}</option>
       </select>
+      <input class="form-control" [disabled]="disableState">
     </div>
     <div class="col-4">
       <div>
