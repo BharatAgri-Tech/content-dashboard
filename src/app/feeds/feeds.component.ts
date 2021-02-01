@@ -7,6 +7,7 @@ import {FeedService} from '../services/feed.service';
 import {Crop, District, State, Taluka} from '../shared/models/common-models';
 import {Feed, FeedImage, NotificationType} from './feed-models';
 import {DatePipe} from '@angular/common';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-feeds',
@@ -36,6 +37,10 @@ export class FeedsComponent implements OnInit {
   englishImageFile = {} as any;
   hindiImageFile = {} as any;
   marathiImageFile = {} as any;
+  imageSource = '';
+  englishImageSource = '';
+  hindiImageSource = '';
+  marathiImageSource = '';
   selectedLanguages = new Set();
   scheduleTo = '';
   minDate = new Date();
@@ -104,7 +109,8 @@ export class FeedsComponent implements OnInit {
   constructor(
     private modalService: BsModalService,
     private logger: NGXLogger,
-    private feedService: FeedService
+    private feedService: FeedService,
+    public domSanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -193,23 +199,38 @@ export class FeedsComponent implements OnInit {
     this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
   }
 
+  resetImageFiles() {
+    this.imageFile = {} as any;
+    this.englishImageFile = {} as any;
+    this.hindiImageFile = {} as any;
+    this.marathiImageFile = {} as any;
+    this.imageSource = '';
+    this.englishImageSource = '';
+    this.hindiImageSource = '';
+    this.marathiImageSource = '';
+  }
+
   onImageSelect(event: any, language: string) {
     const currentImage = event.target.files;
     switch (language) {
       case LanguageEnums.ENGLISH: {
         this.englishImageFile = currentImage[0];
+        this.englishImageSource = window.URL.createObjectURL(this.englishImageFile);
         break;
       }
       case LanguageEnums.HINDI: {
         this.hindiImageFile = currentImage[0];
+        this.hindiImageSource = window.URL.createObjectURL(this.hindiImageFile);
         break;
       }
       case LanguageEnums.MARATHI: {
         this.marathiImageFile = currentImage[0];
+        this.marathiImageSource = window.URL.createObjectURL(this.marathiImageFile);
         break;
       }
       case LanguageEnums.ALL: {
         this.imageFile = currentImage[0];
+        this.imageSource = window.URL.createObjectURL(this.imageFile);
         break;
       }
     }
