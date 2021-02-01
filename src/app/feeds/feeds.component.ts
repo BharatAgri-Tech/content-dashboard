@@ -239,6 +239,9 @@ export class FeedsComponent implements OnInit {
   onLanguageChange(currentLanguage: string) {
     if (this.selectedLanguages.has(currentLanguage)) {
       this.selectedLanguages.delete(currentLanguage);
+      this.englishImageFile = currentLanguage === LanguageEnums.ENGLISH ? {} as any : this.englishImageFile;
+      this.hindiImageFile = currentLanguage === LanguageEnums.HINDI ? {} as any : this.hindiImageFile;
+      this.marathiImageFile = currentLanguage === LanguageEnums.MARATHI ? {} as any : this.marathiImageFile;
     } else {
       this.selectedLanguages.add(currentLanguage);
     }
@@ -247,6 +250,7 @@ export class FeedsComponent implements OnInit {
   }
 
   onTestUsersClick() {
+    console.log(this.englishImageFile);
     this.displaySendingFeed = true;
     this.feed.is_test_feed = true;
     this.saveImageAndCreateFeed();
