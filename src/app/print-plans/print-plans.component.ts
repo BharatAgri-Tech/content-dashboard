@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {PlanService} from '../services/plan.service';
 import {NGXLogger} from 'ngx-logger';
 import {PrintPlan, PrintPlanData} from './print-plan';
+import {PrintBom} from './print-bom';
 
 @Component({
   selector: 'app-print-plans',
@@ -13,6 +14,7 @@ export class PrintPlansComponent implements OnInit {
   subscriptionId = '';
   language = '';
   printPlans = {} as PrintPlan;
+  printBom = {} as PrintBom;
 
   constructor(
     private planService: PlanService,
@@ -31,6 +33,19 @@ export class PrintPlansComponent implements OnInit {
       }, error =>
       {
         this.logger.error('Get print plan failed', error);
+      }
+    );
+    this.getBomDetails();
+  }
+
+  getBomDetails() {
+    this.planService.getBomdetails(this.subscriptionId, this.language).subscribe(
+      data => {
+        this.printBom = data;
+        this.logger.info('Print bom details: ', this.printBom);
+      }, error =>
+      {
+        this.logger.error('Get print bom details failed', error);
       }
     );
   }

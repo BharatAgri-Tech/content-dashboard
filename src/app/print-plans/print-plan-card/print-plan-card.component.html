@@ -1,10 +1,17 @@
-<h2 class="mt-2 mb-0">{{ printPlan.execution_date }}</h2>
+<h2 class="mt-2 mb-0" style="display: inline">{{ printPlan.execution_date }}</h2>
 <hr class="mt-0 mb-1" style="border: 1px solid #009688;">
 <h4 *ngIf="printPlan.activity_data.schedule_category === 'n'" class="mb-1 badge badge-pill badge-warning">Nutrient</h4>
 <div *ngIf="printPlan.activity_data.schedule_category === 'p'">
   <h4 class="mb-1 badge badge-pill badge-success">Pest - {{ printPlan.activity_data.pest }}</h4>
   <div class="pb-2">
     <strong>Symptoms:</strong>
+    <span class="pl-1">{{ printPlan.activity_data.pest_symptoms }}</span>
+  </div>
+</div>
+<div *ngIf="printPlan.activity_data.schedule_category === 'm'">
+  <h4 class="mb-1 badge badge-pill badge-primary">Nutrient + Pest - {{ printPlan.activity_data.pest }}</h4>
+  <div class="pb-2">
+    <strong>Pest Symptoms:</strong>
     <span class="pl-1">{{ printPlan.activity_data.pest_symptoms }}</span>
   </div>
 </div>
@@ -15,6 +22,8 @@
       <th scope="col">Input</th>
       <th scope="col">Quantity</th>
       <th scope="col">Unit</th>
+      <th scope="col">Brand recommendations</th>
+      <th scope="col">Cost of activity</th>
       <th scope="col">Instruction</th>
     </tr>
     </thead>
@@ -23,6 +32,10 @@
       <td>{{activityItem.chemical.name}}</td>
       <td>{{activityItem.quantity}}</td>
       <td>{{activityItem.unit}}</td>
+      <td></td>
+      <td *ngIf="isFirst" style="vertical-align:middle; text-align: center" [rowSpan]="printPlan.activity_items.length">
+        {{printPlan.activity_data.cost_per_activity}}
+      </td>
       <td *ngIf="isFirst" style="vertical-align:middle; text-align: center" [rowSpan]="printPlan.activity_items.length">
         {{printPlan.activity_data.instruction}}
       </td>

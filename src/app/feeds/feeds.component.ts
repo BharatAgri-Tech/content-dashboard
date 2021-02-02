@@ -216,21 +216,25 @@ export class FeedsComponent implements OnInit {
       case LanguageEnums.ENGLISH: {
         this.englishImageFile = currentImage[0];
         this.englishImageSource = window.URL.createObjectURL(this.englishImageFile);
+        this.displayEnglishSizeTypeError = this.englishImageFile.size > ImageValidator.SIZE;
         break;
       }
       case LanguageEnums.HINDI: {
         this.hindiImageFile = currentImage[0];
         this.hindiImageSource = window.URL.createObjectURL(this.hindiImageFile);
+        this.displayHindiSizeTypeError = this.hindiImageFile.size > ImageValidator.SIZE;
         break;
       }
       case LanguageEnums.MARATHI: {
         this.marathiImageFile = currentImage[0];
         this.marathiImageSource = window.URL.createObjectURL(this.marathiImageFile);
+        this.displayMarathiSizeTypeError = this.marathiImageFile.size > ImageValidator.SIZE;
         break;
       }
       case LanguageEnums.ALL: {
         this.imageFile = currentImage[0];
         this.imageSource = window.URL.createObjectURL(this.imageFile);
+        this.displayImageSizeError = this.imageFile.size > ImageValidator.SIZE;
         break;
       }
     }

@@ -17,6 +17,7 @@ export interface PrintPlanActivityData {
   schedule_category: string;
   pest: string;
   pest_symptoms: string;
+  cost_per_activity: number;
 }
 
 export interface PrintPlanActivityItem {

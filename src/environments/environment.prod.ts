@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://pre-prod.leanagri.com/'
+  apiUrl: 'https://backend.leanagri.com/'
 };

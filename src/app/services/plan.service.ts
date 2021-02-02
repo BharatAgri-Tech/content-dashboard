@@ -18,7 +18,7 @@ export class PlanService {
   constructor(private http: HttpClient) {
   }
 
-  printPlanEndpoint = 'nucleus/api/v1/activities/';
+  printPlanEndpoint = 'nucleus/api/v1/';
 
   getPrintPlans(id: string, language: string): Observable<any> {
     let params = new HttpParams();
@@ -26,6 +26,15 @@ export class PlanService {
     params = params.append('lang', language);
     httpOptions.headers = httpOptions.headers.set('Authorization', 'Token ' + localStorage.getItem('token'));
     httpOptions.params = params;
-    return this.http.get(`${environment.apiUrl}` + this.printPlanEndpoint, httpOptions);
+    return this.http.get(`${environment.apiUrl}` + this.printPlanEndpoint + 'activities/', httpOptions);
+  }
+
+  getBomdetails(id: string, language: string): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('subscription-id', id);
+    params = params.append('lang', language);
+    httpOptions.headers = httpOptions.headers.set('Authorization', 'Token ' + localStorage.getItem('token'));
+    httpOptions.params = params;
+    return this.http.get(`${environment.apiUrl}` + this.printPlanEndpoint + 'bom/', httpOptions);
   }
 }
