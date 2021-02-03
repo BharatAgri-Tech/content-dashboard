@@ -9,7 +9,8 @@
   </div>
 </div>
 <div *ngIf="printPlan.activity_data.schedule_category === 'm'">
-  <h4 class="mb-1 badge badge-pill badge-primary">Nutrient + Pest - {{ printPlan.activity_data.pest }}</h4>
+  <h4 class="mb-1 badge badge-pill badge-warning">Nutrient</h4>
+  <h4 class="mb-1 ml-1 badge badge-pill badge-success">Pest - {{ printPlan.activity_data.pest }}</h4>
   <div class="pb-2">
     <strong>Pest Symptoms:</strong>
     <span class="pl-1">{{ printPlan.activity_data.pest_symptoms }}</span>

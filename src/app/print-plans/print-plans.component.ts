@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {PlanService} from '../services/plan.service';
 import {NGXLogger} from 'ngx-logger';
 import {PrintPlan, PrintPlanData} from './print-plan';
@@ -52,6 +52,10 @@ export class PrintPlansComponent implements OnInit {
 
   sortFunc(a: any, b: any) {
     return new Date(a.execution_date).getTime() - new Date(b.execution_date).getTime();
+  }
+
+  sortPackingFunc(a: any, b: any) {
+    return a.priority - b.priority;
   }
 
 }

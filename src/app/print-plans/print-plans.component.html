@@ -30,4 +30,56 @@
       <app-print-plan-card [printPlan]="printPlan"></app-print-plan-card>
     </div>
   </div>
+
+  <div *ngIf="printBom?.data?.length" class="pb-2">
+    <h2 class="mt-2 mb-0" style="display: inline">BOM details</h2>
+    <hr class="mt-0 mb-1" style="border: 1px solid #009688;">
+    <div>
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th scope="col" style="width:25%">Input</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Unit</th>
+          <th scope="col">Price</th>
+          <th scope="col">Packing brand</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let bom of printBom.data">
+          <td>{{bom.chemical}}</td>
+          <td>{{bom.total_quantity}}</td>
+          <td>{{bom.unit}}</td>
+          <td>{{bom.price}}</td>
+          <td>
+            <div *ngFor="let packing of bom.packing_priority_items.sort(sortPackingFunc) ; first as isFirst">
+              <div *ngIf="isFirst" class="row">
+                <div class="col-2">
+                  <strong>Priority</strong>
+                </div>
+                <div class="col-5">
+                  <strong>Brand</strong>
+                </div>
+                <div class="col-5">
+                  <strong>Company</strong>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-2">
+                  <span>{{packing.priority}}</span>
+                </div>
+                <div class="col-5">
+                  <span>{{packing.brand}}</span>
+                </div>
+                <div class="col-5">
+                  <span>{{packing.company}}</span>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
