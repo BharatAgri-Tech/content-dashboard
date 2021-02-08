@@ -33,7 +33,26 @@
       <td>{{activityItem.chemical.name}}</td>
       <td>{{activityItem.quantity}}</td>
       <td>{{activityItem.unit}}</td>
-      <td></td>
+      <td>
+        <div class="border-bottom" *ngFor="let packing of activityItem.chemical.packing_priority_items.sort(sortPackingFunc) ; first as isFirst">
+          <div *ngIf="isFirst" class="row">
+            <div class="col-6">
+              <strong>Brand</strong>
+            </div>
+            <div class="col-6">
+              <strong>Company</strong>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <span>{{packing.brand}}</span>
+            </div>
+            <div class="col-6">
+              <span>{{packing.company}}</span>
+            </div>
+          </div>
+        </div>
+      </td>
       <td *ngIf="isFirst" style="vertical-align:middle; text-align: center" [rowSpan]="printPlan.activity_items.length">
         {{printPlan.activity_data.cost_per_activity}}
       </td>

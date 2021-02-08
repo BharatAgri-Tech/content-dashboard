@@ -15,4 +15,8 @@ export class PrintPlanCardComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  sortPackingFunc(a: any, b: any) {
+    return a.priority - b.priority;
+  }
+
 }

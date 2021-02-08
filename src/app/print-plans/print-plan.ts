@@ -1,3 +1,5 @@
+import {PackingItem} from './print-bom';
+
 export interface PrintPlan {
   data: PrintPlanData[];
   message: string;
@@ -31,4 +33,5 @@ export interface Chemical {
   name: string;
   quantity_type: string;
   purpose: string;
+  packing_priority_items: PackingItem[];
 }
